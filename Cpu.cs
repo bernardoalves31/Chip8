@@ -25,7 +25,7 @@ public class Cpu
 
     public Random rnd = new Random();
 
-    public void setOpcode()
+    public void SetOpcode()
     {
         //Decode opcode moving 2 different bytes in 1 ushort 
         opcode = (ushort)(mem[pc] << 8 | mem[pc + 1]);
@@ -270,7 +270,21 @@ public class Cpu
 
                     case 0x000A:
                         //FX0A
-                        // v[(opcode & 0x0F00) >> 8] = getKey;
+                        bool pressed = false;
+                        for (int i = 0; i < 16; i++)
+                        {
+                            if(keys[i] == 1)
+                            {
+                                pressed = true;
+                                v[(opcode & 0x0F00) >> 8] = (byte)i;
+                            }
+                        }
+
+                        if(!pressed)
+                        {
+                            break;
+                        }
+                        
                         pc += 2;
                         break;
 
@@ -333,5 +347,9 @@ public class Cpu
                 Console.WriteLine("Unknown upcode");
                 break;
         }
+
+        if(delayTimer > 0)
+            --delayTimer;
+
     }
 }
