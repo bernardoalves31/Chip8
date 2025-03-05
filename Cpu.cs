@@ -103,7 +103,7 @@ public class Cpu
                 switch (opcode & 0x000F)
                 {
                     case 0x0000:
-                        //8XY0
+                        //8XY0 
                         v[(opcode & 0x0F00) >> 8] = v[(opcode & 0x00F0) >> 4];
                         pc += 2;
                         break;
@@ -125,7 +125,7 @@ public class Cpu
 
                     case 0x0004:
                         //8XY4
-                        if ((byte)(v[opcode & 0x0F00] + v[opcode & 0x00F0]) > byte.MaxValue) //Has overflow
+                        if ((ushort)(v[(opcode & 0x0F00) >> 8] + v[(opcode & 0x00F0) >> 4]) > byte.MaxValue) //Has overflow
                         {
                             v[15] = 1;
                         }
@@ -140,7 +140,7 @@ public class Cpu
 
                     case 0x0005:
                         //8XY5
-                        if ((byte)(v[(opcode & 0x0F00) >> 8] - v[(opcode & 0x00F0) >> 4]) < byte.MinValue) //Has underflow
+                        if ((ushort)(v[(opcode & 0x0F00) >> 8] - v[(opcode & 0x00F0) >> 4]) < byte.MinValue) //Has underflow
                         {
                             v[15] = 0;
                         }
@@ -160,7 +160,7 @@ public class Cpu
 
                     case 0x0007:
                         //8XY7
-                        if ((byte)(v[(opcode & 0X0F0) >> 4] - v[(opcode & 0X0F00) >> 8]) < byte.MinValue)
+                        if ((ushort)(v[(opcode & 0X0F0) >> 4] - v[(opcode & 0X0F00) >> 8]) < byte.MinValue)
                         {
                             v[15] = 0;
                         }
