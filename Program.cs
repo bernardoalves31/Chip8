@@ -7,8 +7,7 @@ class Program
 
     static void Main()
     {
-
-
+        LoadGame("br8kout.ch8");
         EmulateCycle();
 
 
@@ -18,11 +17,6 @@ class Program
 
     static void EmulateCycle()
     {
-
-
-
-
-        Console.WriteLine("Hello world");
 
 
         if (SDL.SDL_Init(SDL.SDL_INIT_VIDEO) < 0)
@@ -63,6 +57,26 @@ class Program
         SDL.SDL_DestroyWindow(window);
         SDL.SDL_Quit();
 
+    }
+
+    static void LoadGame(String file)
+    {
+        FileStream fileStream = new FileStream(file, FileMode.Open); 
+        BinaryReader binaryReader = new BinaryReader(fileStream);
+        int i = 0;
+        try{
+            while(fileStream.CanRead)
+            {
+                cpu.mem[512 + i] = binaryReader.ReadByte();
+                Console.WriteLine(cpu.mem[512 + i]);
+                i++;
+            }
+
+        }
+        catch (EndOfStreamException)
+        {
+            Console.WriteLine("Game loaded");
+        }
     }
 
 
