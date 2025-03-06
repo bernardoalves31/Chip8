@@ -7,10 +7,9 @@ class Program
 
     static void Main()
     {
+        LoadFontSet();
         LoadGame("br8kout.ch8");
         EmulateCycle();
-
-
 
 
     }
@@ -68,7 +67,7 @@ class Program
             while(fileStream.CanRead)
             {
                 cpu.mem[512 + i] = binaryReader.ReadByte();
-                Console.WriteLine(cpu.mem[512 + i]);
+            //    Console.WriteLine(cpu.mem[512 + i]);
                 i++;
             }
 
@@ -79,6 +78,13 @@ class Program
         }
     }
 
+    static void LoadFontSet() {
+        for (int i = 0; i < 80; i++)
+        { 
+            cpu.mem[i] = cpu.fontSet[i];
+          //  Console.WriteLine(cpu.fontSet[i]);
+        }
+    }
 
     static void SetKeyDown(string key)
     {

@@ -25,6 +25,26 @@ public class Cpu
 
     public Random rnd = new Random();
 
+    public byte[] fontSet = [
+        0xF0, 0x90, 0x90, 0x90, 0xF0, 
+        0x20, 0x60, 0x20, 0x20, 0x70, 
+        0xF0, 0x10, 0xF0, 0x80, 0xF0, 
+        0xF0, 0x10, 0xF0, 0x10, 0xF0, 
+        0x90, 0x90, 0xF0, 0x10, 0x10, 
+        0xF0, 0x80, 0xF0, 0x10, 0xF0, 
+        0xF0, 0x80, 0xF0, 0x90, 0xF0, 
+        0xF0, 0x10, 0x20, 0x40, 0x40, 
+        0xF0, 0x90, 0xF0, 0x90, 0xF0, 
+        0xF0, 0x90, 0xF0, 0x10, 0xF0, 
+        0xF0, 0x90, 0xF0, 0x90, 0x90, 
+        0xE0, 0x90, 0xE0, 0x90, 0xE0, 
+        0xF0, 0x80, 0x80, 0x80, 0xF0, 
+        0xE0, 0x90, 0x90, 0x90, 0xE0, 
+        0xF0, 0x80, 0xF0, 0x80, 0xF0, 
+        0xF0, 0x80, 0xF0, 0x80, 0x80  
+    ];
+
+
     public void SetOpcode()
     {
         //Decode opcode moving 2 different bytes in 1 ushort 
@@ -273,18 +293,18 @@ public class Cpu
                         bool pressed = false;
                         for (int i = 0; i < 16; i++)
                         {
-                            if(keys[i] == 1)
+                            if (keys[i] == 1)
                             {
                                 pressed = true;
                                 v[(opcode & 0x0F00) >> 8] = (byte)i;
                             }
                         }
 
-                        if(!pressed)
+                        if (!pressed)
                         {
                             break;
                         }
-                        
+
                         pc += 2;
                         break;
 
@@ -348,8 +368,12 @@ public class Cpu
                 break;
         }
 
-        if(delayTimer > 0)
+        if (delayTimer > 0)
             --delayTimer;
 
     }
+
+
+
+
 }
