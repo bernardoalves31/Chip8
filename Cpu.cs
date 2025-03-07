@@ -23,9 +23,13 @@ public class Cpu
     //Keys
     public byte[] keys = new byte[16];
 
+    public bool draw = false;
+
     public Random rnd = new Random();
 
-    public byte[] fontSet = [
+    public byte[] fontSet = new byte[]
+    {
+
         0xF0, 0x90, 0x90, 0x90, 0xF0, 
         0x20, 0x60, 0x20, 0x20, 0x70, 
         0xF0, 0x10, 0xF0, 0x80, 0xF0, 
@@ -42,8 +46,8 @@ public class Cpu
         0xE0, 0x90, 0x90, 0x90, 0xE0, 
         0xF0, 0x80, 0xF0, 0x80, 0xF0, 
         0xF0, 0x80, 0xF0, 0x80, 0x80  
-    ];
-
+    };
+    
 
     public void SetOpcode()
     {
@@ -55,9 +59,9 @@ public class Cpu
             case 0x0000:
                 if ((opcode & 0x000F) == 0x0000) //00E0
                 {
-                    for (int i = 0; i < mem.Length; i++)
+                    for (int i = 0; i < screen.Length; i++)
                     {
-                        mem[i] = 0;
+                        screen[i] = 0;
                     }
                     break;
 
@@ -117,6 +121,7 @@ public class Cpu
             case 0x7000:
                 //7XNN
                 v[(opcode & 0x0F00) >> 8] += (byte)(opcode & 0x00FF);
+                pc += 2;
                 break;
 
             case 0x8000:
@@ -160,7 +165,7 @@ public class Cpu
 
                     case 0x0005:
                         //8XY5
-                        if ((ushort)(v[(opcode & 0x0F00) >> 8] - v[(opcode & 0x00F0) >> 4]) < byte.MinValue) //Has underflow
+                        if (v[(opcode & 0x0F00) >> 8] < v[(opcode & 0x00F0) >> 4]) //Has underflow
                         {
                             v[15] = 0;
                         }
@@ -180,7 +185,7 @@ public class Cpu
 
                     case 0x0007:
                         //8XY7
-                        if ((ushort)(v[(opcode & 0X0F0) >> 4] - v[(opcode & 0X0F00) >> 8]) < byte.MinValue)
+                        if (v[(opcode & 0X00F0) >> 4] < v[(opcode & 0X0F00) >> 8])
                         {
                             v[15] = 0;
                         }
@@ -188,7 +193,7 @@ public class Cpu
                         {
                             v[15] = 1;
                         }
-                        v[(opcode & 0X0F00) >> 8] = (byte)(v[(opcode & 0X0F0) >> 4] - v[(opcode & 0X0F00) >> 8]);
+                        v[(opcode & 0X0F00) >> 8] = (byte)(v[(opcode & 0X00F0) >> 4] - v[(opcode & 0X0F00) >> 8]);
                         pc += 2;
                         break;
 
@@ -234,7 +239,7 @@ public class Cpu
             case 0xD000:
                 //DXYN
                 ushort vx = v[(opcode & 0x0F00) >> 8];
-                ushort vy = v[(opcode & 0x00F00) >> 4];
+                ushort vy = v[(opcode & 0x00F0) >> 4];
                 ushort n = (ushort)(opcode & 0x000F);
 
                 v[15] = 0;
@@ -247,7 +252,7 @@ public class Cpu
                     {
                         if ((pixel & 0x80) >> j != 0)
                         {
-                            if (screen[vx + i + (vy + j) * 64] == 1)
+                            if (screen[vx + j + ((vy + i) * 64)] == 1)
                             {
                                 v[15] = 1;
                             }
@@ -257,6 +262,7 @@ public class Cpu
 
                 }
 
+                draw = true;
                 pc += 2;
                 break;
 

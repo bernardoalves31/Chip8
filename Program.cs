@@ -26,6 +26,8 @@ class Program
 
         IntPtr window = SDL.SDL_CreateWindow("Chip-8", 0, 0, 640, 320, SDL.SDL_WindowFlags.SDL_WINDOW_RESIZABLE);
 
+        IntPtr renderer = SDL.SDL_CreateRenderer(window, -1, SDL.SDL_RendererFlags.SDL_RENDERER_ACCELERATED);
+
         SDL.SDL_Event sdl_event;
         SDL.SDL_SetRenderDrawColor(window, 0, 0, 0, 0);
         bool open = true;
@@ -48,6 +50,9 @@ class Program
                 {
                     SetKeyUp(SDL.SDL_GetKeyName(sdl_event.key.keysym.sym));
                 }
+
+                cpu.SetOpcode();
+                Draw(renderer);
 
             }
         }
@@ -78,12 +83,47 @@ class Program
         }
     }
 
-    static void LoadFontSet() {
+    static void LoadFontSet() 
+    {
         for (int i = 0; i < 80; i++)
         { 
             cpu.mem[i] = cpu.fontSet[i];
           //  Console.WriteLine(cpu.fontSet[i]);
         }
+    }
+
+    static void Draw(IntPtr renderer) 
+    {
+
+        if(cpu.draw)
+        {
+            SDL.SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+			SDL.SDL_RenderClear(renderer);
+
+            SDL.SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+
+            SDL.SDL_Rect rect = new SDL.SDL_Rect();
+            
+            rect.w = 10;
+            rect.h = 10;
+
+            for (int y = 0; y < 32; y++)
+			{
+				for (int x = 0; x < 64; x++)
+				{
+					if (cpu.screen[(y * 64) + x] == 1)
+					{
+						rect.x = x * 10;
+						rect.y = y * 10;
+
+						SDL.SDL_RenderFillRect(renderer, ref rect);
+					}
+				}
+			}
+
+        }
+        SDL.SDL_RenderPresent(renderer);
+        cpu.draw = false;
     }
 
     static void SetKeyDown(string key)
