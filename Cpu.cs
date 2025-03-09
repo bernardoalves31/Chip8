@@ -18,7 +18,7 @@ public class Cpu
     public ushort sp;
 
     //Delay timer
-    public byte delayTimer;
+    public byte delayTimer = 0;
 
     //Keys
     public byte[] keys = new byte[16];
@@ -267,22 +267,35 @@ public class Cpu
                 break;
 
             case 0xE000:
-                //EX9E
                 ushort x = v[(opcode & 0x0F00) >> 8];
-                if (keys[x] != 0)
+                switch (opcode & 0x000F)
                 {
-                    pc += 4;
-                    break;
-                }
+                    case 0x000E:
+                        //EX9E
+                        if (keys[x] == 1)
+                        {
+                            Console.WriteLine("Igual");
+                            pc += 4;
+                            break;
+                        }
 
-                //EXA1
-                if (keys[x] == 0)
-                {
-                    pc += 4;
-                    break;
-                }
+                        pc += 2;
+                        break;
 
-                pc += 2;
+                    case 0x0001:
+                        //EXA1
+                        if (keys[x] == 0)
+                        {
+                            pc += 4;
+                            break;
+                        }
+
+                        pc += 2;
+                        break;
+
+                    default:
+                        break;
+                }
                 break;
 
             case 0xF000:
