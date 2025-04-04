@@ -53,6 +53,7 @@ public class Cpu
     {
         //Decode opcode moving 2 different bytes in 1 ushort 
         opcode = (ushort)(mem[pc] << 8 | mem[pc + 1]);
+        Console.WriteLine($"PC: {pc:X3}, Opcode: {opcode:X4}");
 
         switch (opcode & 0xF000)
         {
@@ -136,16 +137,19 @@ public class Cpu
                     case 0x0001:
                         //8XY1
                         v[(opcode & 0x0F00) >> 8] |= v[(opcode & 0x00F0) >> 4];
+                        pc += 2;
                         break;
 
                     case 0x0002:
                         //8XY2
                         v[(opcode & 0x0F00) >> 8] &= v[(opcode & 0x00F0) >> 4];
+                        pc += 2;
                         break;
 
                     case 0x0003:
                         //8XY3
                         v[(opcode & 0x0F00) >> 8] ^= v[(opcode & 0x00F0) >> 4];
+                        pc += 2;
                         break;
 
                     case 0x0004:
@@ -181,6 +185,7 @@ public class Cpu
                         //8XY6
                         v[15] = (byte)(v[(opcode & 0x0F00) >> 8] & 0x01);
                         v[(opcode & 0x0F00) >> 8] >>= 1;
+                        pc += 2;
                         break;
 
                     case 0x0007:
@@ -274,7 +279,6 @@ public class Cpu
                         //EX9E
                         if (keys[x] == 1)
                         {
-                            Console.WriteLine("Igual");
                             pc += 4;
                             break;
                         }
@@ -373,6 +377,8 @@ public class Cpu
                         {
                             v[i] = mem[I + i];
                         }
+                        pc += 2;
+
                         break;
 
 
